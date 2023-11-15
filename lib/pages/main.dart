@@ -158,8 +158,9 @@ class _MyHomePageState extends State<MyHomePage> {
               elevation: 7,
               child: GestureDetector(
                 onTap: () {
-                  _login();
-                  print("Walahi dost");
+                  Navigator.pushReplacementNamed(context, '/home');
+                  // _login();
+                  // print("Walahi dost");
                 },
                 child: Center(
                   child: Text(
