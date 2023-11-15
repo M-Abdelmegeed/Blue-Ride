@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "570606155967",
+    "project_id": "campuscruise-c63a4",
+    "storage_bucket": "campuscruise-c63a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570606155967:android:f2dd3cab255b131d082e0a",
+        "android_client_info": {
+          "package_name": "com.example.campus_cruise"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD92VdvWE6Dqi3l42lxy0SgcCKb5h0UYjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570606155967:android:208e5e2462207be6082e0a",
+        "android_client_info": {
+          "package_name": "com.example.campus_ride"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD92VdvWE6Dqi3l42lxy0SgcCKb5h0UYjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
