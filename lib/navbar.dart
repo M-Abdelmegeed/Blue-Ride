@@ -15,14 +15,14 @@ class NavBar extends StatelessWidget {
         canvasColor: AppColors.primaryColor,
       ),
       child: BottomNavigationBar(
-        fixedColor: Colors.white,
-        unselectedItemColor: AppColors.backgroundColor,
+        fixedColor: AppColors.secondaryColor,
+        unselectedItemColor: const Color.fromARGB(255, 198, 200, 198),
         showUnselectedLabels: true,
         currentIndex: currentIndex,
         onTap: (index) {
           onTap(index);
           // Navigate to the selected route
-          Navigator.pushNamed(context, routes[index]);
+          Navigator.pushReplacementNamed(context, routes[index]);
         },
         items: [
           BottomNavigationBarItem(

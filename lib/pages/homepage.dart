@@ -17,6 +17,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         // backgroundColor: AppColors.primaryColor,
+        centerTitle: true,
         title: Text(
           'Book A Ride',
           style: TextStyle(color: Colors.black),

@@ -9,6 +9,7 @@ import '../firebase/firebase_auth_services.dart';
 import './profile.dart';
 import './orderHistory.dart';
 import './routes.dart';
+import './landingPage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +37,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Campus Cruise'),
+      home: landingPage(),
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
         '/activity': (context) => new orderHistory(),
@@ -44,6 +45,7 @@ class _MyAppState extends State<MyApp> {
         '/profile': (context) => new Profile(),
         '/signup': (BuildContext context) => new SignupPage(),
         '/home': (BuildContext context) => new HomePage(),
+        '/login': (BuildContext context) => new MyHomePage(title: 'Blue Ride')
       },
     );
   }
@@ -74,9 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Colors.white,
         title: Text(
-          widget.title,
+          'Blue Ride',
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -90,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: EdgeInsets.fromLTRB(15, 75, 0, 0),
                   child: Text(
                     "Welcome to Blue Ride!",
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w300),
+                    style: TextStyle(fontSize: 34, fontWeight: FontWeight.w300),
                   ),
                 )
               ],
@@ -183,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
             height: 40,
             child: Material(
               borderRadius: BorderRadius.circular(20),
-              shadowColor: AppColors.primaryColor,
+              shadowColor: AppColors.black,
               color: AppColors.backgroundColor,
               elevation: 7,
               child: InkWell(
@@ -194,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Text(
                     'Sign Up',
                     style: TextStyle(
-                        color: Color.fromARGB(255, 0, 0, 0),
+                        color: AppColors.textColor,
                         fontFamily: 'Roboto',
                         fontSize: 16,
                         fontWeight: FontWeight.w400),
