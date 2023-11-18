@@ -13,9 +13,11 @@ class Routes extends StatefulWidget {
 
 class _RoutesState extends State<Routes> {
   final List<Route> routes = [
-    Route(from: 'Gate 3', to: 'Korba', time: '5:30 PM'),
-    Route(from: '5th Settlement', to: 'Gate 3', time: '7:30 AM'),
-    Route(from: 'Gate 3', to: 'Nasr City', time: '5:30 PM'),
+    Route(from: 'Gate 3', to: 'Korba', time: '5:30 PM', price: '30 EGP'),
+    Route(
+        from: '5th Settlement', to: 'Gate 3', time: '7:30 AM', price: '60 EGP'),
+    Route(from: 'Gate 3', to: 'Nasr City', time: '5:30 PM', price: '40 EGP'),
+    Route(from: 'Rehab', to: 'Gate 3', time: '7:30 AM', price: '70 EGP'),
   ];
   int _currentIndex = 1;
 
@@ -33,10 +35,10 @@ class _RoutesState extends State<Routes> {
         itemCount: routes.length,
         itemBuilder: (context, index) {
           return CustomCard(
-            from: routes[index].from,
-            to: routes[index].to,
-            time: routes[index].time,
-          );
+              from: routes[index].from,
+              to: routes[index].to,
+              time: routes[index].time,
+              price: routes[index].price);
         },
       ),
       bottomNavigationBar: NavBar(
@@ -55,6 +57,11 @@ class Route {
   final String from;
   final String to;
   final String time;
+  final String price;
 
-  Route({required this.from, required this.to, required this.time});
+  Route(
+      {required this.from,
+      required this.to,
+      required this.time,
+      required this.price});
 }

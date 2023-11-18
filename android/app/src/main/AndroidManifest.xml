@@ -3,6 +3,8 @@
         android:label="campus_ride"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+            <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyDem6EyNVRyW0JOy7zn3rHPc36KYKYO5aQ"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

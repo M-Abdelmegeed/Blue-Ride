@@ -5,8 +5,13 @@ class CustomCard extends StatelessWidget {
   final String from;
   final String to;
   final String time;
+  final String price;
 
-  CustomCard({required this.from, required this.to, required this.time});
+  CustomCard(
+      {required this.from,
+      required this.to,
+      required this.time,
+      required this.price});
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +101,7 @@ class CustomCard extends StatelessWidget {
                         Icon(
                           Icons.location_pin,
                           color: AppColors.secondaryColor,
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -116,6 +121,20 @@ class CustomCard extends StatelessWidget {
                   ),
                   Text(
                     time,
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
+                  ),
+                  const SizedBox(
+                    width: 165,
+                  ),
+                  const Icon(
+                    Icons.monetization_on_outlined,
+                    color: AppColors.secondaryColor,
+                  ),
+                  const SizedBox(
+                    width: 1,
+                  ),
+                  Text(
+                    price,
                     style: const TextStyle(color: Colors.white, fontSize: 15),
                   ),
                 ],

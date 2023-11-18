@@ -57,8 +57,7 @@ class _orderHistoryState extends State<orderHistory> {
                 return Card(
                   elevation: 5,
                   margin: EdgeInsets.all(8),
-                  color:
-                      AppColors.primaryColorLight, // Set the desired color here
+                  color: AppColors.primaryColorLight,
                   child: ListTile(
                     title: Text(
                       '${orders[index].date}',
@@ -134,9 +133,7 @@ class _orderHistoryState extends State<orderHistory> {
                       ],
                     ),
                     trailing: Icon(Icons.no_crash,
-                        size: 40,
-                        color:
-                            AppColors.secondaryColor), // Icon at the top right
+                        size: 40, color: AppColors.secondaryColor),
                   ),
                 );
               },

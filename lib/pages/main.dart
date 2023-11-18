@@ -10,6 +10,7 @@ import './profile.dart';
 import './orderHistory.dart';
 import './routes.dart';
 import './landingPage.dart';
+import './availableBookings.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,8 +28,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // This widget is the root of your application.
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -45,7 +44,8 @@ class _MyAppState extends State<MyApp> {
         '/profile': (context) => new Profile(),
         '/signup': (BuildContext context) => new SignupPage(),
         '/home': (BuildContext context) => new HomePage(),
-        '/login': (BuildContext context) => new MyHomePage(title: 'Blue Ride')
+        '/login': (BuildContext context) => new MyHomePage(title: 'Blue Ride'),
+        '/availableBookings': (BuildContext context) => new availableBookings()
       },
     );
   }
@@ -162,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/home');
                   // _login();
-                  // print("Walahi dost");
+                  // print("Test");
                 },
                 child: Center(
                   child: Text(
