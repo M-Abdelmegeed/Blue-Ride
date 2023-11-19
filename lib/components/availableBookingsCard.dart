@@ -66,7 +66,7 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                               style: const TextStyle(
                                   fontSize: 15,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.w300),
                             ),
                           ],
                         ),
@@ -90,7 +90,7 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                               style: const TextStyle(
                                   fontSize: 15,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.w300),
                             ),
                           ],
                         ),
@@ -111,7 +111,7 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                               style: const TextStyle(
                                   fontSize: 15,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.w300),
                             ),
                           ],
                         ),
@@ -132,7 +132,7 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                               style: const TextStyle(
                                   fontSize: 15,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.w300),
                             ),
                           ],
                         ),
@@ -153,7 +153,7 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                               style: const TextStyle(
                                   fontSize: 15,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.w300),
                             ),
                           ],
                         ),
@@ -174,7 +174,7 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                               style: const TextStyle(
                                   fontSize: 15,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.w300),
                             ),
                           ],
                         ),
@@ -192,13 +192,24 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                               elevation: 8,
                               backgroundColor: isButtonPressed
                                   ? Colors.white
-                                  : AppColors
-                                      .primaryColor, // Change the background color to red
+                                  : AppColors.primaryColor,
                             ),
                             onPressed: () {
                               setState(() {
                                 isButtonPressed = !isButtonPressed;
                                 showToast(context);
+                                if (isButtonPressed) {
+                                  Navigator.pushNamed(
+                                      context, '/confirmBooking',
+                                      arguments: {
+                                        "driver": widget.driver,
+                                        "from": widget.from,
+                                        "to": widget.to,
+                                        "price": widget.price,
+                                        "time": widget.time,
+                                        "date": widget.date
+                                      });
+                                }
                               });
                             },
                             child: Text(

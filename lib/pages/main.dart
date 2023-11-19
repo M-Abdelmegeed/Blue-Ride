@@ -11,6 +11,7 @@ import './orderHistory.dart';
 import './routes.dart';
 import './landingPage.dart';
 import './availableBookings.dart';
+import './confirmBooking.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,7 +46,8 @@ class _MyAppState extends State<MyApp> {
         '/signup': (BuildContext context) => new SignupPage(),
         '/home': (BuildContext context) => new HomePage(),
         '/login': (BuildContext context) => new MyHomePage(title: 'Blue Ride'),
-        '/availableBookings': (BuildContext context) => new availableBookings()
+        '/availableBookings': (BuildContext context) => new availableBookings(),
+        '/confirmBooking': (BuildContext context) => new ConfirmBooking(),
       },
     );
   }
