@@ -18,7 +18,6 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
 
-// Used to avoid memory leaks
   @override
   void dispose() {
     _asuEmailController.dispose();
@@ -176,16 +175,6 @@ class _SignupPageState extends State<SignupPage> {
                     },
                   ),
                   SizedBox(height: 30),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     if (_formKey.currentState!.validate()) {
-                  //       // All input data is valid, you can proceed with form submission.
-                  //       // Access input data using _firstNameController.text, _lastNameController.text, etc.
-                  //       // Place your submission logic here.
-                  //     }
-                  //   },
-                  //   child: Text('Submit'),
-                  // ),
                   Container(
                     height: 40,
                     child: Material(
@@ -197,9 +186,6 @@ class _SignupPageState extends State<SignupPage> {
                         onTap: () {
                           if (_formKey.currentState!.validate()) {
                             _signUp();
-                            //       // All input data is valid, you can proceed with form submission.
-                            //       // Access input data using _firstNameController.text, _lastNameController.text, etc.
-                            //       // Place your submission logic here.
                           } else {
                             print("Your data is incorrect or missing");
                           }
@@ -209,7 +195,7 @@ class _SignupPageState extends State<SignupPage> {
                           child: Text(
                             'Submit',
                             style: TextStyle(
-                                color: Color.fromARGB(255, 255, 255, 255),
+                                color: AppColors.secondaryColor,
                                 fontFamily: 'Roboto',
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400),
@@ -234,7 +220,8 @@ class _SignupPageState extends State<SignupPage> {
     String password = _passwordController.text;
 
     try {
-      User? user = await _auth.signUpWithEmailAndPassword(asuEmail, password);
+      User? user = await _auth.signUpWithEmailAndPassword(
+          asuEmail, password, firstName, lastName);
 
       if (user != null) {
         print("User is successfully created!");

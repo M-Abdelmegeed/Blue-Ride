@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../style/colors.dart';
 import '../components/routesCard.dart';
 import '../navbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Routes extends StatefulWidget {
   const Routes({Key? key}) : super(key: key);
@@ -12,33 +13,48 @@ class Routes extends StatefulWidget {
 }
 
 class _RoutesState extends State<Routes> {
-  final List<Route> routes = [
-    Route(from: 'Gate 3', to: 'Korba', time: '5:30 PM', price: '30 EGP'),
-    Route(
-        from: '5th Settlement', to: 'Gate 3', time: '7:30 AM', price: '60 EGP'),
-    Route(from: 'Gate 3', to: 'Nasr City', time: '5:30 PM', price: '40 EGP'),
-    Route(from: 'Rehab', to: 'Gate 3', time: '7:30 AM', price: '70 EGP'),
-  ];
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  CollectionReference firebaseRoutes =
+      FirebaseFirestore.instance.collection('Routes');
+
   int _currentIndex = 1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: AppColors.primaryColor,
         centerTitle: true,
         title: Text(
           'Available Routes',
         ),
       ),
-      body: ListView.builder(
-        itemCount: routes.length,
-        itemBuilder: (context, index) {
-          return CustomCard(
-              from: routes[index].from,
-              to: routes[index].to,
-              time: routes[index].time,
-              price: routes[index].price);
+      body: StreamBuilder<QuerySnapshot>(
+        stream: firebaseRoutes.snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                var routeData =
+                    snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                return Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: CustomCard(
+                    from: routeData["from"],
+                    to: routeData["to"],
+                    time: routeData["time"],
+                    price: routeData["priceRange"].join('-').toString(),
+                    stops: routeData["stops"],
+                  ),
+                );
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Text('${snapshot.error}');
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
         },
       ),
       bottomNavigationBar: NavBar(
@@ -54,13 +70,15 @@ class _RoutesState extends State<Routes> {
 }
 
 class Route {
+  final List stops;
   final String from;
   final String to;
   final String time;
   final String price;
 
   Route(
-      {required this.from,
+      {required this.stops,
+      required this.from,
       required this.to,
       required this.time,
       required this.price});

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../style/colors.dart';
 import '../navbar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -10,6 +11,15 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _user = _auth.currentUser;
+  }
+
   int _currentIndex = 3;
 
   @override
@@ -46,7 +56,7 @@ class _ProfileState extends State<Profile> {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'Mohammed Abdelmegeed',
+                  '${_user!.displayName}',
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w300,
@@ -54,7 +64,7 @@ class _ProfileState extends State<Profile> {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  '19P1298@eng.asu.edu.eg',
+                  '${_user!.email}',
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w300,
@@ -70,8 +80,10 @@ class _ProfileState extends State<Profile> {
                       padding: EdgeInsets.all(16), // Padding
                       elevation: 5, // Elevation
                       minimumSize: Size(200, 10)),
-                  onPressed: () {
+                  onPressed: () async {
                     // Implement sign-out logic
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.pushReplacementNamed(context, '/login');
                   },
                   child: Text(
                     'Sign Out',

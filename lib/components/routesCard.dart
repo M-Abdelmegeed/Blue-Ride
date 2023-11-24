@@ -6,12 +6,14 @@ class CustomCard extends StatelessWidget {
   final String to;
   final String time;
   final String price;
+  final List stops;
 
   CustomCard(
       {required this.from,
       required this.to,
       required this.time,
-      required this.price});
+      required this.price,
+      required this.stops});
 
   @override
   Widget build(BuildContext context) {
@@ -46,19 +48,23 @@ class CustomCard extends StatelessWidget {
                         SizedBox(
                           height: 3,
                         ),
-                        Text(
-                          from,
-                          style: const TextStyle(
-                              fontSize: 15,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                        Icon(
-                          Icons.school,
-                          color: AppColors.secondaryColor,
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.location_on_outlined,
+                              color: AppColors.secondaryColor,
+                            ),
+                            SizedBox(
+                              width: 3,
+                            ),
+                            Text(
+                              from,
+                              style: const TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -78,6 +84,7 @@ class CustomCard extends StatelessWidget {
                   ),
                   Expanded(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         const Text(
@@ -88,19 +95,24 @@ class CustomCard extends StatelessWidget {
                         SizedBox(
                           height: 3,
                         ),
-                        Text(
-                          to,
-                          style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                        Icon(
-                          Icons.location_pin,
-                          color: AppColors.secondaryColor,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(
+                              Icons.location_pin,
+                              color: AppColors.secondaryColor,
+                            ),
+                            Flexible(
+                              child: Text(
+                                softWrap: true,
+                                to,
+                                style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -124,7 +136,7 @@ class CustomCard extends StatelessWidget {
                     style: const TextStyle(color: Colors.white, fontSize: 15),
                   ),
                   const SizedBox(
-                    width: 165,
+                    width: 132,
                   ),
                   const Icon(
                     Icons.monetization_on_outlined,
@@ -134,11 +146,47 @@ class CustomCard extends StatelessWidget {
                     width: 1,
                   ),
                   Text(
-                    price,
+                    price + ' EGP',
                     style: const TextStyle(color: Colors.white, fontSize: 15),
                   ),
                 ],
               ),
+              SizedBox(
+                height: 6,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.report_gmailerrorred_outlined,
+                    color: AppColors.secondaryColor,
+                  ),
+                  Text(
+                    " STOPS",
+                    style: TextStyle(
+                        color: AppColors.secondaryColor, fontSize: 14),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 6,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: Text(
+                      stops.join("  -  "),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold),
+                      softWrap: true,
+                      maxLines: 3,
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),

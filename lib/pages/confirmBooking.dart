@@ -180,7 +180,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                         ),
                         onPressed: () {
                           showToast(context);
-                          Navigator.pushNamed(context, '/availableBookings');
+                          Navigator.pop(context);
                         },
                         child: Text(
                           'Confirm Booking',

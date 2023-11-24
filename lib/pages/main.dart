@@ -37,7 +37,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
         useMaterial3: true,
       ),
-      home: landingPage(),
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
         '/activity': (context) => new orderHistory(),
@@ -162,15 +162,15 @@ class _MyHomePageState extends State<MyHomePage> {
               elevation: 7,
               child: GestureDetector(
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, '/home');
-                  // _login();
-                  // print("Test");
+                  // Navigator.pushReplacementNamed(context, '/home');
+                  _login();
+                  print("Test");
                 },
                 child: Center(
                   child: Text(
                     'Sign In',
                     style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.secondaryColor,
                         fontFamily: 'Roboto',
                         fontSize: 16,
                         fontWeight: FontWeight.w400),
@@ -188,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Material(
               borderRadius: BorderRadius.circular(20),
               shadowColor: AppColors.black,
-              color: AppColors.backgroundColor,
+              color: AppColors.secondaryColor,
               elevation: 7,
               child: InkWell(
                 onTap: () {
@@ -198,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Text(
                     'Sign Up',
                     style: TextStyle(
-                        color: AppColors.textColor,
+                        color: AppColors.primaryColor,
                         fontFamily: 'Roboto',
                         fontSize: 16,
                         fontWeight: FontWeight.w400),
@@ -215,8 +215,28 @@ class _MyHomePageState extends State<MyHomePage> {
   void _login() async {
     String asuEmail = _asuEmailController.text;
     String password = _passwordController.text;
+    if (asuEmail == "" || password == "") {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Login Failed'),
+              content: Text('Fields cannot be empty!'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+      return null;
+    }
 
-    User? user = await _auth.signInWithEmailAndPassword(asuEmail, password);
+    User? user = await _auth.signInWithEmailAndPassword(
+        email: asuEmail, password: password);
 
     if (user != null) {
       print("Successful Login!");
@@ -231,7 +251,7 @@ class _MyHomePageState extends State<MyHomePage> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
+                    Navigator.of(context).pop();
                   },
                   child: Text('OK'),
                 ),

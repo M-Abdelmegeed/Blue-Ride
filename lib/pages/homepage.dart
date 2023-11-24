@@ -14,16 +14,24 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   GoogleMapController? _controller;
   Set<Marker> _markers = Set<Marker>();
+  Set<Polyline> _polylines = Set<Polyline>();
+  List<String> places = ['Nasr City', 'Heliopolis', 'Rehab', 'ASU'];
+  Map<String, LatLng> placeLocations = {
+    'Nasr City': LatLng(30.057018088095514, 31.329249227523302),
+    'ASU': LatLng(30.06474820910293, 31.278861490545815)
+  };
+  String selectedFromValue = 'Nasr City';
+  String selectedToValue = 'ASU';
 
   @override
   Widget build(BuildContext context) {
-    _markers.add(
-      Marker(
-        markerId: MarkerId('selected-location'),
-        position: LatLng(30.06474820910293, 31.278861490545815),
-        infoWindow: InfoWindow(title: 'Faculty of Engineering ASU'),
-      ),
-    );
+    // _markers.add(
+    //   Marker(
+    //     markerId: MarkerId('selected-location'),
+    //     position: LatLng(30.06474820910293, 31.278861490545815),
+    //     infoWindow: InfoWindow(title: 'Faculty of Engineering ASU'),
+    //   ),
+    // );
     return Scaffold(
       appBar: AppBar(
         // backgroundColor: AppColors.primaryColor,
@@ -39,6 +47,7 @@ class _HomePageState extends State<HomePage> {
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
             height: MediaQuery.of(context).size.height * 1,
             child: GoogleMap(
+              // polylines: _polylines,
               markers: _markers,
               myLocationEnabled: true,
               myLocationButtonEnabled: true,
@@ -60,19 +69,38 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 Container(
+                  width: 350,
                   decoration: BoxDecoration(
                       border:
                           Border.all(color: AppColors.secondaryColor, width: 1),
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.white),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: ' From',
-                      border: InputBorder.none,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: DropdownButton<String>(
+                      icon: Icon(
+                        Icons.location_pin,
+                        size: 0,
+                      ),
+                      underline: Text(''),
+                      hint: Text('  From'),
+                      value: selectedFromValue,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedFromValue = value.toString();
+                          _handleInputChange(selectedFromValue,
+                              selectedToValue); // Update the selected value here
+                        });
+                      },
+                      items: places.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
                     ),
                   ),
                 ),
-                // Additional UI elements can be added here
               ],
             ),
           ),
@@ -83,19 +111,38 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 Container(
+                  width: 350,
                   decoration: BoxDecoration(
                       border:
                           Border.all(color: AppColors.secondaryColor, width: 1),
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.white),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: ' Where to?',
-                      border: InputBorder.none,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: DropdownButton<String>(
+                      icon: Icon(
+                        Icons.location_pin,
+                        size: 0,
+                      ),
+                      underline: Text(''),
+                      hint: Text('  Where to..?'),
+                      value: selectedToValue,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedToValue = value.toString();
+                          _handleInputChange(selectedFromValue,
+                              selectedToValue); // Update the selected value here
+                        });
+                      },
+                      items: places.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
                     ),
                   ),
                 ),
-                // Additional UI elements can be added here
               ],
             ),
           ),
@@ -127,16 +174,31 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _handleMapTap(LatLng latLng) {
-    setState(() {
-      _markers.clear();
-      _markers.add(
-        Marker(
-          markerId: MarkerId('selected-location'),
-          position: latLng,
-          infoWindow: InfoWindow(title: 'Selected Location'),
-        ),
-      );
-    });
+  void _handleInputChange(selectedFromLocation, selectedToLocation) {
+    _markers.clear();
+    final toLocation = selectedToLocation.toLowerCase();
+    final toEntry = placeLocations.entries.firstWhere(
+      (entry) => entry.key.toLowerCase() == toLocation,
+      // orElse: () => MapEntry('', LatLng(0.0, 0.0)),
+    );
+    final fromLocation = selectedFromLocation.toLowerCase();
+    final fromEntry = placeLocations.entries.firstWhere(
+      (entry) => entry.key.toLowerCase() == fromLocation,
+      // orElse: () => MapEntry('', LatLng(0.0, 0.0)),
+    );
+    _markers.add(
+      Marker(
+        markerId: MarkerId('selected-location'),
+        position: toEntry.value,
+        infoWindow: InfoWindow(title: 'To'),
+      ),
+    );
+    _markers.add(
+      Marker(
+        markerId: MarkerId('selected-location2'),
+        position: fromEntry.value,
+        infoWindow: InfoWindow(title: 'From'),
+      ),
+    );
   }
 }
