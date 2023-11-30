@@ -15,12 +15,14 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
   TextEditingController _asuEmailController = TextEditingController();
+  TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
     _asuEmailController.dispose();
+    _phoneNumberController.dispose();
     _passwordController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -129,6 +131,28 @@ class _SignupPageState extends State<SignupPage> {
                     },
                   ),
                   TextFormField(
+                    controller: _phoneNumberController,
+                    decoration: InputDecoration(
+                      labelText: 'Phonenumber',
+                      labelStyle: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey,
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty || value.length < 10) {
+                        return 'Please enter a valid phone number';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
                       labelText: 'Password',
@@ -218,13 +242,15 @@ class _SignupPageState extends State<SignupPage> {
     String lastName = _lastNameController.text;
     String asuEmail = _asuEmailController.text;
     String password = _passwordController.text;
+    String phoneNumber = _phoneNumberController.text;
 
     try {
       User? user = await _auth.signUpWithEmailAndPassword(
-          asuEmail, password, firstName, lastName);
+          asuEmail, password, firstName, lastName, phoneNumber);
 
       if (user != null) {
         print("User is successfully created!");
+        // SQL Query here to add the user in 'STUDENTS' table
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         print("Some error happened");

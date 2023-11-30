@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../style/colors.dart';
 import '../navbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -13,11 +14,29 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user;
+  Map<String, dynamic> userDocument = {};
 
   @override
   void initState() {
     super.initState();
     _user = _auth.currentUser;
+  }
+
+  Future<Map<String, dynamic>?> getUserProfileData(String uid) async {
+    try {
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('Users');
+      DocumentSnapshot userDocument = await users.doc(uid).get();
+      if (userDocument.exists) {
+        return userDocument.data() as Map<String, dynamic>;
+      } else {
+        print('User profile data not found for UID: $uid');
+        return null;
+      }
+    } catch (e) {
+      print('Error retrieving user profile data: $e');
+      return null;
+    }
   }
 
   int _currentIndex = 3;
@@ -49,11 +68,14 @@ class _ProfileState extends State<Profile> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 50, // Adjust the radius as needed
-                  backgroundImage: AssetImage(
-                      'images/Abdelmegeed.jpeg'), // Replace with your user icon
-                ),
+                    backgroundColor: AppColors.secondaryColor,
+                    radius: 50,
+                    child: Icon(
+                      Icons.person, // Replace with the desired icon
+                      size: 85,
+                      color:
+                          Colors.white, // Replace with the desired icon color
+                    )),
                 SizedBox(height: 16),
                 Text(
                   '${_user!.displayName}',
@@ -70,6 +92,15 @@ class _ProfileState extends State<Profile> {
                       fontWeight: FontWeight.w300,
                       color: AppColors.textColor),
                 ),
+                SizedBox(height: 8),
+                Text(
+                  // '${userDocument['phoneNumber']}',
+                  'Test',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w300,
+                      color: AppColors.textColor),
+                ),
                 SizedBox(height: 50),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -81,7 +112,7 @@ class _ProfileState extends State<Profile> {
                       elevation: 5, // Elevation
                       minimumSize: Size(200, 10)),
                   onPressed: () async {
-                    // Implement sign-out logic
+                    // SQL Query to remove the user from the local db
                     await FirebaseAuth.instance.signOut();
                     Navigator.pushReplacementNamed(context, '/login');
                   },

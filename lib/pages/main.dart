@@ -12,6 +12,7 @@ import './routes.dart';
 import './landingPage.dart';
 import './availableBookings.dart';
 import './confirmBooking.dart';
+import '../sqlite//sqflite.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +38,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
         useMaterial3: true,
       ),
-      home: HomePage(),
+      home: MyHomePage(title: 'Blue Ride'),
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
         '/activity': (context) => new orderHistory(),
@@ -213,6 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _login() async {
+    // LocalDatabase mydb = LocalDatabase();
     String asuEmail = _asuEmailController.text;
     String password = _passwordController.text;
     if (asuEmail == "" || password == "") {
@@ -240,6 +242,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (user != null) {
       print("Successful Login!");
+      // print("User :" + user.toString());
+      // await mydb.write(''' INSERT INTO 'RIDERS'
+      //             ('ID' ,'NAME' , 'EMAIL', 'PHONENUMBER') VALUES ('${user.uid}','${user.displayName}', '${user.email}', '${ raqam el telephone }' )''');
       Navigator.pushReplacementNamed(context, '/home');
     } else {
       showDialog(

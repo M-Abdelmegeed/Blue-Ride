@@ -14,7 +14,6 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   GoogleMapController? _controller;
   Set<Marker> _markers = Set<Marker>();
-  Set<Polyline> _polylines = Set<Polyline>();
   List<String> places = ['Nasr City', 'Heliopolis', 'Rehab', 'ASU'];
   Map<String, LatLng> placeLocations = {
     'Nasr City': LatLng(30.057018088095514, 31.329249227523302),
@@ -25,13 +24,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // _markers.add(
-    //   Marker(
-    //     markerId: MarkerId('selected-location'),
-    //     position: LatLng(30.06474820910293, 31.278861490545815),
-    //     infoWindow: InfoWindow(title: 'Faculty of Engineering ASU'),
-    //   ),
-    // );
     return Scaffold(
       appBar: AppBar(
         // backgroundColor: AppColors.primaryColor,
@@ -47,7 +39,6 @@ class _HomePageState extends State<HomePage> {
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
             height: MediaQuery.of(context).size.height * 1,
             child: GoogleMap(
-              // polylines: _polylines,
               markers: _markers,
               myLocationEnabled: true,
               myLocationButtonEnabled: true,
