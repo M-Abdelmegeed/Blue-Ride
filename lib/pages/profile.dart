@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../style/colors.dart';
 import '../navbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../sqlite/sqflite.dart';
 
 class Profile extends StatefulWidget {

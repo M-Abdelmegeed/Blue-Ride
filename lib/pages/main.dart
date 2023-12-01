@@ -10,7 +10,6 @@ import '../firebase/firebase_auth_services.dart';
 import './profile.dart';
 import './orderHistory.dart';
 import './routes.dart';
-import './landingPage.dart';
 import './availableBookings.dart';
 import './confirmBooking.dart';
 import '../sqlite//sqflite.dart';

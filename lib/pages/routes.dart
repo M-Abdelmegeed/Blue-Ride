@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../style/colors.dart';
 import '../components/routesCard.dart';
 import '../navbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

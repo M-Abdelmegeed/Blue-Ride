@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../style/colors.dart';
 import '../components/availableBookingsCard.dart';
 import '../navbar.dart';
 
