@@ -19,7 +19,7 @@ class LocalDatabase {
     String mypath = join(databasepath, 'mynewdatafile.db');
     Database mydb =
         await openDatabase(mypath, version: Version, onCreate: (db, version) {
-      db.execute('''CREATE TABLE IF NOT EXISTS 'STUDENTS'(
+      db.execute('''CREATE TABLE IF NOT EXISTS 'PASSENGERS'(
       'ID' TEXT NOT NULL PRIMARY KEY,
       'NAME' TEXT NOT NULL,
       'EMAIL' TEXT NOT NULL,

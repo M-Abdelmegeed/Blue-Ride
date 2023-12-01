@@ -3,6 +3,7 @@ import '../style/colors.dart';
 import '../navbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../sqlite/sqflite.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -12,31 +13,27 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  LocalDatabase mydb = LocalDatabase();
   FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user;
-  Map<String, dynamic> userDocument = {};
+  List<Map> userDocuments = [];
+
+  Future Reading_Database() async {
+    List<Map> response =
+        await mydb.read(''' SELECT * FROM 'PASSENGERS' LIMIT 1 ''');
+    // userDocuments = [];
+    userDocuments.addAll(response);
+    print("User Document:");
+    print("User Document:" + userDocuments[0]["NAME"]);
+    setState(() {});
+  }
 
   @override
   void initState() {
-    super.initState();
     _user = _auth.currentUser;
-  }
-
-  Future<Map<String, dynamic>?> getUserProfileData(String uid) async {
-    try {
-      CollectionReference users =
-          FirebaseFirestore.instance.collection('Users');
-      DocumentSnapshot userDocument = await users.doc(uid).get();
-      if (userDocument.exists) {
-        return userDocument.data() as Map<String, dynamic>;
-      } else {
-        print('User profile data not found for UID: $uid');
-        return null;
-      }
-    } catch (e) {
-      print('Error retrieving user profile data: $e');
-      return null;
-    }
+    Reading_Database();
+    super.initState();
+    mydb.checkdata();
   }
 
   int _currentIndex = 3;
@@ -58,8 +55,6 @@ class _ProfileState extends State<Profile> {
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               border: Border.all(color: AppColors.secondaryColor, width: 2),
-              // color: AppColors
-              //     .backgroundCardColor, // Set the desired background color
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
@@ -93,18 +88,16 @@ class _ProfileState extends State<Profile> {
                       color: AppColors.textColor),
                 ),
                 SizedBox(height: 8),
-                Text(
-                  // '${userDocument['phoneNumber']}',
-                  'Test',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w300,
-                      color: AppColors.textColor),
-                ),
+                // Text(
+                //   '${_user!.email}',
+                //   style: TextStyle(
+                //       fontSize: 16,
+                //       fontWeight: FontWeight.w300,
+                //       color: AppColors.textColor),
+                // ),
                 SizedBox(height: 50),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      // shadowColor: AppColors.secondaryColor,
                       backgroundColor:
                           AppColors.backgroundCardColor, // Background color
                       foregroundColor: Colors.white, // Text color
@@ -112,7 +105,7 @@ class _ProfileState extends State<Profile> {
                       elevation: 5, // Elevation
                       minimumSize: Size(200, 10)),
                   onPressed: () async {
-                    // SQL Query to remove the user from the local db
+                    await mydb.delete(''' DELETE FROM 'PASSENGERS' ''');
                     await FirebaseAuth.instance.signOut();
                     Navigator.pushReplacementNamed(context, '/login');
                   },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../firebase_options.dart';
 import 'signup.dart';
@@ -30,6 +31,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
+  @override
+  void initState() {
+    super.initState();
+    _user = _auth.currentUser;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,7 +47,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
         useMaterial3: true,
       ),
-      home: MyHomePage(title: 'Blue Ride'),
+      home: _user == null ? MyHomePage(title: 'Blue Ride') : HomePage(),
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
         '/activity': (context) => new orderHistory(),
@@ -213,8 +222,25 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Future<Map<String, dynamic>?> getUserProfileData(String uid) async {
+    try {
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('Users');
+      DocumentSnapshot userDocument = await users.doc(uid).get();
+      if (userDocument.exists) {
+        return userDocument.data() as Map<String, dynamic>;
+      } else {
+        print('User profile data not found for UID: $uid');
+        return null;
+      }
+    } catch (e) {
+      print('Error retrieving user profile data: $e');
+      return null;
+    }
+  }
+
   void _login() async {
-    // LocalDatabase mydb = LocalDatabase();
+    LocalDatabase mydb = LocalDatabase();
     String asuEmail = _asuEmailController.text;
     String password = _passwordController.text;
     if (asuEmail == "" || password == "") {
@@ -241,10 +267,13 @@ class _MyHomePageState extends State<MyHomePage> {
         email: asuEmail, password: password);
 
     if (user != null) {
+      Map<String, dynamic>? userFireStore = await getUserProfileData(user.uid);
+      print("Firestore user: ");
+      print(userFireStore!["phoneNumber"]);
       print("Successful Login!");
       // print("User :" + user.toString());
-      // await mydb.write(''' INSERT INTO 'RIDERS'
-      //             ('ID' ,'NAME' , 'EMAIL', 'PHONENUMBER') VALUES ('${user.uid}','${user.displayName}', '${user.email}', '${ raqam el telephone }' )''');
+      await mydb.write(''' INSERT INTO 'PASSENGERS'
+                  ('ID' ,'NAME' , 'EMAIL', 'PHONENUMBER') VALUES ('${user.uid}','${user.displayName}', '${user.email}', '${userFireStore["phoneNumber"]}' ) ''');
       Navigator.pushReplacementNamed(context, '/home');
     } else {
       showDialog(

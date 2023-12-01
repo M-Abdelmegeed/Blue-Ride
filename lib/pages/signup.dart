@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../firebase/firebase_auth_services.dart';
 import '../style/colors.dart';
+import '../sqlite/sqflite.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -9,6 +10,7 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  LocalDatabase mydb = LocalDatabase();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final FirebaseAuthService _auth = FirebaseAuthService();
 
@@ -251,6 +253,8 @@ class _SignupPageState extends State<SignupPage> {
       if (user != null) {
         print("User is successfully created!");
         // SQL Query here to add the user in 'STUDENTS' table
+        await mydb.write(''' INSERT INTO 'PASSENGERS'
+                  ('ID' ,'NAME' , 'EMAIL', 'PHONENUMBER') VALUES ('${user.uid}','${firstName + " " + lastName}', '${asuEmail}', '${phoneNumber}' ) ''');
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         print("Some error happened");
