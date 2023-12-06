@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import '../style/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class availableBookingsCard extends StatefulWidget {
+  final bool isUserPending;
   final String tripId;
   final String driver;
   final String from;
@@ -14,7 +16,8 @@ class availableBookingsCard extends StatefulWidget {
   final String stops;
 
   availableBookingsCard(
-      {required this.tripId,
+      {required this.isUserPending,
+      required this.tripId,
       required this.driver,
       required this.date,
       required this.from,
@@ -30,16 +33,16 @@ class availableBookingsCard extends StatefulWidget {
 class _availableBookingsCardState extends State<availableBookingsCard> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user;
-  bool isButtonPressed = false;
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
     _user = _auth.currentUser;
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isButtonPressed = widget.isUserPending;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Card(
@@ -206,24 +209,65 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                                   ? Colors.white
                                   : AppColors.primaryColor,
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               setState(() {
                                 isButtonPressed = !isButtonPressed;
-                                showToast(context);
-                                if (isButtonPressed) {
-                                  Navigator.pushNamed(
-                                      context, '/confirmBooking',
-                                      arguments: {
-                                        "tripId": widget.tripId,
-                                        "driver": widget.driver,
-                                        "from": widget.from,
-                                        "to": widget.to,
-                                        "price": widget.price,
-                                        "time": widget.time,
-                                        "date": widget.date
-                                      });
-                                }
+                                // showToast(context);
                               });
+                              if (isButtonPressed) {
+                                Navigator.pushNamed(context, '/confirmBooking',
+                                    arguments: {
+                                      "tripId": widget.tripId,
+                                      "driver": widget.driver,
+                                      "from": widget.from,
+                                      "to": widget.to,
+                                      "price": widget.price,
+                                      "time": widget.time,
+                                      "date": widget.date
+                                    });
+                              } else {
+                                // Delete record in history collection
+                                QuerySnapshot querySnapshot =
+                                    await FirebaseFirestore.instance
+                                        .collection('History')
+                                        .where('driverName',
+                                            isEqualTo: widget.driver)
+                                        .where('from', isEqualTo: widget.from)
+                                        .where('to', isEqualTo: widget.to)
+                                        .where('date', isEqualTo: widget.date)
+                                        .get();
+                                if (querySnapshot.docs.isNotEmpty) {
+                                  await querySnapshot.docs.first.reference
+                                      .delete();
+                                  print('Record deleted successfully!');
+                                  isButtonPressed = !isButtonPressed;
+                                } else {
+                                  print('No matching record found.');
+                                }
+                                DocumentReference tripDocument =
+                                    FirebaseFirestore.instance
+                                        .collection('Trips')
+                                        .doc(widget.tripId);
+                                await tripDocument.update({
+                                  'pendingRiders':
+                                      FieldValue.arrayRemove([_user!.uid]),
+                                });
+                                // print("Delete record here");
+                                AwesomeDialog(
+                                    context: context,
+                                    dialogType: DialogType.warning,
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 2),
+                                    buttonsBorderRadius:
+                                        BorderRadius.all(Radius.circular(2)),
+                                    headerAnimationLoop: false,
+                                    animType: AnimType.scale,
+                                    title: 'Booking Cancelled',
+                                    btnOkOnPress: () {
+                                      // isButtonPressed = !isButtonPressed;
+                                    })
+                                  ..show();
+                              }
                             },
                             child: Text(
                               isButtonPressed ? 'Cancel' : 'Book Trip',
@@ -244,19 +288,19 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
     );
   }
 
-  void showToast(BuildContext context) {
-    final scaffold = ScaffoldMessenger.of(context);
-    String message;
-    if (isButtonPressed) {
-      message = 'Trip booked succesfully!';
-    } else {
-      message = 'Booking cancelled';
-    }
-    scaffold.showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
+  // void showToast(BuildContext context) {
+  //   final scaffold = ScaffoldMessenger.of(context);
+  //   String message;
+  //   if (isButtonPressed) {
+  //     message = 'Trip booked succesfully!';
+  //   } else {
+  //     message = 'Booking cancelled';
+  //   }
+  //   scaffold.showSnackBar(
+  //     SnackBar(
+  //       content: Text(message),
+  //       duration: Duration(seconds: 2),
+  //     ),
+  //   );
+  // }
 }

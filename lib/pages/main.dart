@@ -165,27 +165,35 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: EdgeInsets.only(left: 20, right: 20),
             height: 40,
             child: Material(
-              borderRadius: BorderRadius.circular(20),
-              shadowColor: const Color.fromARGB(255, 11, 130, 209),
-              color: AppColors.primaryColor,
-              elevation: 7,
-              child: GestureDetector(
-                onTap: () {
-                  _login();
-                  print("Test");
-                },
-                child: Center(
-                  child: Text(
-                    'Sign In',
-                    style: TextStyle(
+                borderRadius: BorderRadius.circular(20),
+                shadowColor: const Color.fromARGB(255, 11, 130, 209),
+                color: AppColors.primaryColor,
+                elevation: 7,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _login();
+                    // print("Test");
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      // side: BorderSide(color: AppColors.secondaryColor),
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Sign In',
+                      style: TextStyle(
                         color: AppColors.secondaryColor,
                         fontFamily: 'Roboto',
                         fontSize: 16,
-                        fontWeight: FontWeight.w400),
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
+                )),
           ),
           SizedBox(
             height: 30,

@@ -99,6 +99,11 @@ class _BookingsState extends State<availableBookings> {
                   var availableTripsData =
                       snapshot.data!.docs[index].data() as Map<String, dynamic>;
                   print(availableTripsData);
+                  List<String> pendingRiders = List<String>.from(
+                      availableTripsData['pendingRiders'] ?? []);
+
+                  bool isUserPending = pendingRiders.contains(_user?.uid);
+                  print("User Pending?????" + isUserPending.toString());
                   if (snapshot.data!.docs.length == 0) {
                     return Center(
                       child: Text('Sorry, no trips were found'),
@@ -113,6 +118,7 @@ class _BookingsState extends State<availableBookings> {
                     time: availableTripsData["time"],
                     price: availableTripsData["price"].toString(),
                     stops: availableTripsData["stops"].join(" - "),
+                    isUserPending: isUserPending,
                   );
                 });
           }),
