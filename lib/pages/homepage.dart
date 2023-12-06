@@ -14,19 +14,50 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   GoogleMapController? _controller;
   Set<Marker> _markers = Set<Marker>();
-  List<String> places = ['Nasr City', 'Heliopolis', 'Rehab', 'ASU'];
+  List<String> places = [
+    // 'Nasr City',
+    'Heliopolis',
+    'Rehab',
+    'ASU',
+    'Tayaran',
+    'Abbas el Akkad',
+    'Makram Ebeid',
+    'Dokki',
+    'Tahrir Square',
+    'Youssef Abbas',
+    'Wafaa wel Amal',
+    'Cairo Opera House',
+    'Ahmed Fakhry',
+    'Sheraton',
+    'Madinaty',
+    'Sherouk',
+    'Mokattam',
+  ];
   Map<String, LatLng> placeLocations = {
-    'Nasr City': LatLng(30.057018088095514, 31.329249227523302),
-    'ASU': LatLng(30.06474820910293, 31.278861490545815)
+    'ASU': LatLng(30.06474820910293, 31.278861490545815),
+    'Heliopolis': LatLng(30.113268828632258, 31.343674948595595),
+    'Dokki': LatLng(30.040216631304027, 31.205701089600485),
+    'Tayaran': LatLng(30.045349367163304, 31.328682159303348),
+    'Ahmed Fakhry': LatLng(30.072324023121833, 31.351877011546815),
+    'Youssef Abbas': LatLng(30.06712989283018, 31.319515297994563),
+    'Wafaa wel Amal': LatLng(30.032635172330473, 31.33396492328897),
+    'Cairo Opera House': LatLng(30.042537736813326, 31.223754026486457),
+    'Sheraton': LatLng(30.104350278188726, 31.370668820940296),
+    'Madinaty': LatLng(30.113451762820304, 31.627884677927522),
+    'Sherouk': LatLng(30.181999753007208, 31.62468552992807),
+    'Rehab': LatLng(30.059151492006812, 31.4958391394371),
+    'Tahrir Square': LatLng(30.044494635882263, 31.235624615118088),
+    'Abbas el Akkad': LatLng(30.056843711318994, 31.338100409296043),
+    'Makram Ebeid': LatLng(30.062150301859262, 31.344985695802887),
+    'Mokattam': LatLng(30.022446106882835, 31.30427737187155),
   };
-  String selectedFromValue = 'Nasr City';
+  String selectedFromValue = 'Ahmed Fakhry';
   String selectedToValue = 'ASU';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: AppColors.primaryColor,
         centerTitle: true,
         title: Text(
           'Book Your Ride',
@@ -146,7 +177,11 @@ class _HomePageState extends State<HomePage> {
                         .primaryColor, // Change the background color to red
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/availableBookings');
+                    Navigator.pushNamed(context, '/availableBookings',
+                        arguments: {
+                          "From": selectedFromValue,
+                          "To": selectedToValue
+                        });
                   },
                   child: Text(
                     'Find A Trip',

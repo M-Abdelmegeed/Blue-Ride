@@ -1,28 +1,43 @@
 import 'package:flutter/material.dart';
 import '../style/colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class availableBookingsCard extends StatefulWidget {
+  final String tripId;
   final String driver;
   final String from;
   final String to;
   final String time;
   final String price;
   final String date;
+  final String stops;
 
   availableBookingsCard(
-      {required this.driver,
+      {required this.tripId,
+      required this.driver,
       required this.date,
       required this.from,
       required this.to,
       required this.time,
-      required this.price});
+      required this.price,
+      required this.stops});
 
   @override
   State<availableBookingsCard> createState() => _availableBookingsCardState();
 }
 
 class _availableBookingsCardState extends State<availableBookingsCard> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
   bool isButtonPressed = false;
+
+  @override
+  void initState() async {
+    super.initState();
+    _user = _auth.currentUser;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -70,9 +85,6 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                             ),
                           ],
                         ),
-                        // SizedBox(
-                        //   height: 3,
-                        // ),
                         Row(
                           children: [
                             Icon(
@@ -121,12 +133,6 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                               Icons.date_range,
                               color: AppColors.secondaryColor,
                             ),
-                            // const Text(
-                            //   'DATE ',
-                            //   style: TextStyle(
-                            //       fontSize: 14,
-                            //       color: AppColors.secondaryColor),
-                            // ),
                             Text(
                               widget.date,
                               style: const TextStyle(
@@ -142,12 +148,6 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                               Icons.access_time_outlined,
                               color: AppColors.secondaryColor,
                             ),
-                            // const Text(
-                            //   'TIME ',
-                            //   style: TextStyle(
-                            //       fontSize: 14,
-                            //       color: AppColors.secondaryColor),
-                            // ),
                             Text(
                               widget.time,
                               style: const TextStyle(
@@ -163,12 +163,6 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                               Icons.attach_money_outlined,
                               color: AppColors.secondaryColor,
                             ),
-                            // const Text(
-                            //   'PRICE ',
-                            //   style: TextStyle(
-                            //       fontSize: 14,
-                            //       color: AppColors.secondaryColor),
-                            // ),
                             Text(
                               widget.price,
                               style: const TextStyle(
@@ -178,6 +172,24 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                             ),
                           ],
                         ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.report_gmailerrorred_outlined,
+                              color: AppColors.secondaryColor,
+                            ),
+                            Flexible(
+                              child: Text(
+                                widget.stops,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -202,6 +214,7 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                                   Navigator.pushNamed(
                                       context, '/confirmBooking',
                                       arguments: {
+                                        "tripId": widget.tripId,
                                         "driver": widget.driver,
                                         "from": widget.from,
                                         "to": widget.to,

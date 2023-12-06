@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../style/colors.dart';
 import '../navbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class ConfirmBooking extends StatefulWidget {
   const ConfirmBooking({Key? key}) : super(key: key);
@@ -10,8 +13,18 @@ class ConfirmBooking extends StatefulWidget {
 }
 
 class _ConfirmBookingState extends State<ConfirmBooking> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
   int _currentIndex = 0;
   Map bookingDetails = {};
+  CollectionReference availableTrips =
+      FirebaseFirestore.instance.collection('History');
+
+  @override
+  void initState() {
+    super.initState();
+    _user = _auth.currentUser;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +177,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                         children: [
                           SizedBox(width: 2),
                           Text(
-                            '${bookingDetails['price']}',
+                            '${bookingDetails['price'] + " EGP"}',
                             style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w600,
@@ -179,8 +192,44 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                           backgroundColor: AppColors.secondaryColor,
                         ),
                         onPressed: () {
-                          showToast(context);
-                          Navigator.pop(context);
+                          // showToast(context);
+                          AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.success,
+                            borderSide:
+                                BorderSide(color: Colors.green, width: 2),
+                            buttonsBorderRadius:
+                                BorderRadius.all(Radius.circular(2)),
+                            headerAnimationLoop: false,
+                            animType: AnimType.scale,
+                            title: 'Booking Successfull !',
+                            desc:
+                                "Please track your ride's status in the activity tab",
+                            btnOkOnPress: () async {
+                              await FirebaseFirestore.instance
+                                  .collection('History')
+                                  .add({
+                                'date': bookingDetails['date'],
+                                'driverId': '1',
+                                'driverName': bookingDetails['driver'],
+                                'from': bookingDetails['from'],
+                                'riderId': _user!.uid,
+                                'riderName': _user!.displayName,
+                                'status': 'Pending',
+                                'time': bookingDetails['time'],
+                                'to': bookingDetails['to'],
+                              });
+                              DocumentReference tripRef = FirebaseFirestore
+                                  .instance
+                                  .collection('Trips')
+                                  .doc(bookingDetails['tripId']);
+                              await tripRef.update({
+                                'pendingRiders':
+                                    FieldValue.arrayUnion([_user!.uid]),
+                              });
+                              Navigator.pop(context);
+                            },
+                          )..show();
                         },
                         child: Text(
                           'Confirm Booking',

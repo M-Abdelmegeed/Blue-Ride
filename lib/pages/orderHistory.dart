@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../style/colors.dart';
 import '../navbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class orderHistory extends StatefulWidget {
   const orderHistory({Key? key}) : super(key: key);
@@ -11,6 +13,19 @@ class orderHistory extends StatefulWidget {
 
 class _orderHistoryState extends State<orderHistory> {
   int _currentIndex = 2;
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _user = _auth.currentUser;
+  }
+
+  CollectionReference ridesHistory =
+      FirebaseFirestore.instance.collection('History');
 
   final List<Order> orders = [
     Order(
@@ -37,108 +52,151 @@ class _orderHistoryState extends State<orderHistory> {
         centerTitle: true,
         title: Text('Order History'),
       ),
-      body: Column(
-        children: [
-          // Padding(
-          //   padding: const EdgeInsets.all(16.0),
-          //   child: Text(
-          //     'Order History',
-          //     style: TextStyle(fontSize: 26, fontWeight: FontWeight.w400),
-          //   ),
-          // ),
-          SizedBox(
-            height: 14,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: orders.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  elevation: 5,
-                  margin: EdgeInsets.all(8),
-                  color: AppColors.primaryColorLight,
-                  child: ListTile(
-                    title: Text(
-                      '${orders[index].date}',
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('History')
+            .where('riderId', isEqualTo: _user!.uid)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          return Column(
+            children: [
+              SizedBox(
+                height: 14,
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    var historyData = snapshot.data!.docs[index].data()
+                        as Map<String, dynamic>;
+                    return Card(
+                      elevation: 5,
+                      margin: EdgeInsets.all(8),
+                      color: AppColors.primaryColorLight,
+                      child: ListTile(
+                        title: Text(
+                          '${historyData["date"]}',
+                          style: TextStyle(
+                            fontSize: 22,
+                            color: AppColors.secondaryColor,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                text: 'From: ',
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: historyData["from"],
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      color: AppColors.textColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            RichText(
+                              text: TextSpan(
+                                text: 'To: ',
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: historyData["to"],
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      color: AppColors.textColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            RichText(
+                              text: TextSpan(
+                                text: 'Driver Name: ',
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: historyData["driverName"],
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      color: AppColors.textColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        trailing: IconButton(
+                          icon: Column(
+                            children: [
+                              Icon(
+                                historyData["status"] == 'Pending'
+                                    ? Icons.pending
+                                    : historyData["status"] == 'Completed'
+                                        ? Icons.check_circle_sharp
+                                        : historyData["status"] == 'Rejected'
+                                            ? Icons.cancel
+                                            : Icons.done_all_outlined,
+                                size: 20,
+                                color: historyData["status"] == 'Pending'
+                                    ? Colors.yellow
+                                    : historyData["status"] == 'Completed'
+                                        ? Colors.grey
+                                        : historyData["status"] == 'Rejected'
+                                            ? Colors.red
+                                            : Colors.green,
+                              ),
+                              Text(
+                                historyData["status"],
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            // Handle button press if needed
+                            print('Status Pressed');
+                          },
+                        ),
                       ),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            text: 'From: ',
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: orders[index].from,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  color: AppColors.textColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        RichText(
-                          text: TextSpan(
-                            text: 'To: ',
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: orders[index].to,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  color: AppColors.textColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        RichText(
-                          text: TextSpan(
-                            text: 'Driver Name: ',
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: orders[index].driverName,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  color: AppColors.textColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    trailing: Icon(Icons.no_crash,
-                        size: 40, color: AppColors.secondaryColor),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
       bottomNavigationBar: NavBar(
         currentIndex: _currentIndex,

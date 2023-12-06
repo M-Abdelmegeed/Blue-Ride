@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../components/availableBookingsCard.dart';
 import '../navbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rxdart/rxdart.dart';
 
 class availableBookings extends StatefulWidget {
   const availableBookings({Key? key}) : super(key: key);
@@ -10,46 +13,109 @@ class availableBookings extends StatefulWidget {
 }
 
 class _BookingsState extends State<availableBookings> {
-  final List<Trip> trips = [
-    Trip(
-        from: 'Nasr City',
-        to: 'Gate 3',
-        time: '7:30 AM',
-        price: '30 EGP',
-        driver: 'Seif Ahmed',
-        date: '21-11-2023'),
-    Trip(
-        from: 'Nasr City',
-        to: 'Gate 3',
-        time: '7:30 AM',
-        price: '30 EGP',
-        driver: 'Abdelrahman Gaber',
-        date: '22-11-2023'),
-  ];
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  BehaviorSubject<QuerySnapshot> _streamController =
+      BehaviorSubject<QuerySnapshot>();
+  Map<String, dynamic>? searchData;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _user = _auth.currentUser;
+  // }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    searchData =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    _user = _auth.currentUser;
+    _initializeStream(searchData!["From"], searchData!["To"]);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // _streamController.close();
+  }
+
+  void _initializeStream(String from, String to) {
+    Stream<QuerySnapshot> query1 = FirebaseFirestore.instance
+        .collection('Trips')
+        .where('from', isEqualTo: from)
+        .where('to', isEqualTo: to)
+        .snapshots();
+
+    Stream<QuerySnapshot> query2 = FirebaseFirestore.instance
+        .collection('Trips')
+        .where('from', isEqualTo: from)
+        .where('stops', arrayContains: to)
+        .snapshots();
+
+    var combinedStream = query1.mergeWith([query2]);
+    print("Combined Stream");
+    print(combinedStream.toString());
+
+    _streamController.addStream(combinedStream);
+  }
+
+  CollectionReference availableTrips =
+      FirebaseFirestore.instance.collection('Trips');
   int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: AppColors.primaryColor,
         centerTitle: true,
         title: Text(
           'Available Trips',
         ),
       ),
-      body: ListView.builder(
-        itemCount: trips.length,
-        itemBuilder: (context, index) {
-          return availableBookingsCard(
-              date: trips[index].date,
-              driver: trips[index].driver,
-              from: trips[index].from,
-              to: trips[index].to,
-              time: trips[index].time,
-              price: trips[index].price);
-        },
-      ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: _streamController.stream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            if (snapshot.data!.docs.length == 0) {
+              return Center(
+                child: Text(
+                  "Sorry, there are no trips :(",
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.w300),
+                ),
+              );
+            }
+
+            return ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  var availableTripsData =
+                      snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                  print(availableTripsData);
+                  if (snapshot.data!.docs.length == 0) {
+                    return Center(
+                      child: Text('Sorry, no trips were found'),
+                    );
+                  }
+                  return availableBookingsCard(
+                    tripId: snapshot.data!.docs[index].id,
+                    date: availableTripsData["date"],
+                    driver: availableTripsData["driverName"],
+                    from: availableTripsData["from"],
+                    to: availableTripsData["to"],
+                    time: availableTripsData["time"],
+                    price: availableTripsData["price"].toString(),
+                    stops: availableTripsData["stops"].join(" - "),
+                  );
+                });
+          }),
       bottomNavigationBar: NavBar(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -60,21 +126,4 @@ class _BookingsState extends State<availableBookings> {
       ),
     );
   }
-}
-
-class Trip {
-  final String from;
-  final String to;
-  final String time;
-  final String price;
-  final String driver;
-  final String date;
-
-  Trip(
-      {required this.date,
-      required this.from,
-      required this.driver,
-      required this.to,
-      required this.time,
-      required this.price});
 }
