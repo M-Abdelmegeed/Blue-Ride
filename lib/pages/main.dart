@@ -32,6 +32,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user;
+
   @override
   void initState() {
     super.initState();

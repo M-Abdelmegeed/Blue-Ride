@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import '../style/colors.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -51,8 +53,8 @@ class _HomePageState extends State<HomePage> {
     'Makram Ebeid': LatLng(30.062150301859262, 31.344985695802887),
     'Mokattam': LatLng(30.022446106882835, 31.30427737187155),
   };
-  String selectedFromValue = 'Ahmed Fakhry';
-  String selectedToValue = 'ASU';
+  String selectedToValue = 'Ahmed Fakhry';
+  String selectedFromValue = 'ASU';
 
   @override
   Widget build(BuildContext context) {

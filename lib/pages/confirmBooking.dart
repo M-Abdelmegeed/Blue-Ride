@@ -210,7 +210,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                   .collection('History')
                                   .add({
                                 'date': bookingDetails['date'],
-                                'driverId': '1',
+                                'driverId': bookingDetails['driverId'],
                                 'driverName': bookingDetails['driver'],
                                 'from': bookingDetails['from'],
                                 'riderId': _user!.uid,
@@ -226,6 +226,8 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                               await tripRef.update({
                                 'pendingRiders':
                                     FieldValue.arrayUnion([_user!.uid]),
+                                'pendingRidersNames':
+                                    FieldValue.arrayUnion([_user!.displayName]),
                               });
                               Navigator.pop(context);
                             },

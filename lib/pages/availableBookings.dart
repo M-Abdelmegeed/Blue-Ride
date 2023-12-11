@@ -101,8 +101,11 @@ class _BookingsState extends State<availableBookings> {
                   print(availableTripsData);
                   List<String> pendingRiders = List<String>.from(
                       availableTripsData['pendingRiders'] ?? []);
+                  List<String> acceptedRiders = List<String>.from(
+                      availableTripsData['acceptedRiders'] ?? []);
 
                   bool isUserPending = pendingRiders.contains(_user?.uid);
+                  bool isUserAccepted = acceptedRiders.contains(_user?.uid);
                   print("User Pending?????" + isUserPending.toString());
                   if (snapshot.data!.docs.length == 0) {
                     return Center(
@@ -110,6 +113,7 @@ class _BookingsState extends State<availableBookings> {
                     );
                   }
                   return availableBookingsCard(
+                    driverId: availableTripsData["driverId"],
                     tripId: snapshot.data!.docs[index].id,
                     date: availableTripsData["date"],
                     driver: availableTripsData["driverName"],
@@ -119,6 +123,7 @@ class _BookingsState extends State<availableBookings> {
                     price: availableTripsData["price"].toString(),
                     stops: availableTripsData["stops"].join(" - "),
                     isUserPending: isUserPending,
+                    isUserAccepted: isUserAccepted,
                   );
                 });
           }),
