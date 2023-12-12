@@ -145,8 +145,8 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                           ),
                         ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                      Wrap(
+                        alignment: WrapAlignment.start,
                         children: [
                           Icon(
                             Icons.person,
@@ -157,7 +157,9 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                           Text(
                             'Driver ',
                             style: TextStyle(
-                                color: AppColors.secondaryColor, fontSize: 24),
+                              color: AppColors.secondaryColor,
+                              fontSize: 24,
+                            ),
                           ),
                           Text(
                             '${bookingDetails['driver']}',

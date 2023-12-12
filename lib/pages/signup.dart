@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../firebase/firebase_auth_services.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import '../style/colors.dart';
 import '../sqlite/sqflite.dart';
 
@@ -35,6 +36,7 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: AppColors.primaryColor,
         title: Text(
@@ -249,16 +251,40 @@ class _SignupPageState extends State<SignupPage> {
     try {
       User? user = await _auth.signUpWithEmailAndPassword(
           asuEmail, password, firstName, lastName, phoneNumber);
-
       if (user != null) {
-        print("User is successfully created!");
-        // SQL Query here to add the user in 'STUDENTS' table
-        await mydb.write(''' INSERT INTO 'PASSENGERS'
+        // Show a success dialog
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.success,
+          animType: AnimType.bottomSlide,
+          title: 'Account Created',
+          desc: 'Your account has been created successfully!',
+          btnOkOnPress: () async {
+            await mydb.write(''' INSERT INTO 'PASSENGERS'
                   ('ID' ,'NAME' , 'EMAIL', 'PHONENUMBER') VALUES ('${user.uid}','${firstName + " " + lastName}', '${asuEmail}', '${phoneNumber}' ) ''');
-        Navigator.pushReplacementNamed(context, '/home');
+            Navigator.pushReplacementNamed(context, '/home');
+          },
+        )..show();
       } else {
-        print("Some error happened");
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          animType: AnimType.bottomSlide,
+          title: 'Error',
+          desc: 'Some error happened while creating your account...',
+          btnOkOnPress: () {},
+        )..show();
       }
+
+      // if (user != null) {
+      //   print("User is successfully created!");
+      //   // SQL Query here to add the user in 'STUDENTS' table
+      //   await mydb.write(''' INSERT INTO 'PASSENGERS'
+      //             ('ID' ,'NAME' , 'EMAIL', 'PHONENUMBER') VALUES ('${user.uid}','${firstName + " " + lastName}', '${asuEmail}', '${phoneNumber}' ) ''');
+      //   Navigator.pushReplacementNamed(context, '/home');
+      // } else {
+      //   print("Some error happened");
+      // }
     } catch (e) {
       print("An error has occurred: " + e.toString());
     }

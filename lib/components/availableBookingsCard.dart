@@ -3,6 +3,7 @@ import '../style/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:intl/intl.dart';
 
 class availableBookingsCard extends StatefulWidget {
   final bool isUserAccepted;
@@ -174,7 +175,7 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                                     color: AppColors.secondaryColor,
                                   ),
                                   Text(
-                                    widget.price,
+                                    widget.price + 'EGP',
                                     style: const TextStyle(
                                         fontSize: 15,
                                         color: Colors.white,
@@ -222,8 +223,46 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                                       // showToast(context);
                                     });
                                     if (isButtonPressed) {
-                                      Navigator.pushNamed(
-                                          context, '/confirmBooking',
+                                      DateTime now = DateTime.now();
+                                      DateFormat dateFormat =
+                                          DateFormat('yyyy-MM-dd');
+                                      DateFormat timeFormat =
+                                          DateFormat('h:mm a');
+                                      DateTime tripDate =
+                                          dateFormat.parse(widget.date);
+                                      DateTime tripTime =
+                                          timeFormat.parse(widget.time);
+                                      DateTime tripDateTime = DateTime(
+                                        tripDate.year,
+                                        tripDate.month,
+                                        tripDate.day,
+                                        tripTime.hour,
+                                        tripTime.minute,
+                                      );
+                                      if ((tripDateTime.isBefore(
+                                                  now.add(Duration(days: 1))) &&
+                                              now.hour >= 13 &&
+                                              widget.time == "5:30 PM") ||
+                                          (tripDateTime.isAfter(
+                                                  now.add(Duration(days: 1))) &&
+                                              now.hour >= 22 &&
+                                              widget.time == "7:30 AM")) {
+                                        AwesomeDialog(
+                                          context: context,
+                                          dialogType: DialogType.error,
+                                          animType: AnimType.bottomSlide,
+                                          title: 'Oops, too late!',
+                                          desc:
+                                              'It is too late to book the following trip. Afternoon trips have to be booked before 1PM, and morning trips have to be booked by 10PM the prior day.',
+                                          btnOkColor: Colors.red,
+                                          btnOkOnPress: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        )..show();
+                                      } else {
+                                        Navigator.pushNamed(
+                                          context,
+                                          '/confirmBooking',
                                           arguments: {
                                             "driverId": widget.driverId,
                                             "tripId": widget.tripId,
@@ -233,7 +272,9 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                                             "price": widget.price,
                                             "time": widget.time,
                                             "date": widget.date
-                                          });
+                                          },
+                                        );
+                                      }
                                     } else {
                                       // Delete record in history collection
                                       QuerySnapshot querySnapshot =
@@ -268,14 +309,15 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                                       });
                                       AwesomeDialog(
                                           context: context,
-                                          dialogType: DialogType.warning,
+                                          dialogType: DialogType.error,
                                           borderSide: BorderSide(
                                               color: Colors.black, width: 2),
                                           buttonsBorderRadius: BorderRadius.all(
                                               Radius.circular(2)),
                                           headerAnimationLoop: false,
                                           animType: AnimType.scale,
-                                          title: 'Booking Cancelled',
+                                          title: 'Booking Cancelled!',
+                                          btnOkColor: Colors.red,
                                           btnOkOnPress: () {
                                             // isButtonPressed = !isButtonPressed;
                                           })
