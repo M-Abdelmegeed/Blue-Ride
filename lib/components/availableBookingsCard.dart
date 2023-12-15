@@ -49,7 +49,12 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
   Widget build(BuildContext context) {
     bool isUserAccepted = widget.isUserAccepted;
     bool isButtonPressed = widget.isUserPending;
-    return isUserAccepted
+    bool isDatePassed = false;
+    String currentDate = DateTime.now().toLocal().toString().split(' ')[0];
+    if (currentDate.compareTo(widget.date) > 0) {
+      isDatePassed = true;
+    }
+    return isUserAccepted || isDatePassed
         ? Center()
         : Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -239,14 +244,23 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                                         tripTime.hour,
                                         tripTime.minute,
                                       );
-                                      if ((tripDateTime.isBefore(
-                                                  now.add(Duration(days: 1))) &&
-                                              now.hour >= 13 &&
-                                              widget.time == "5:30 PM") ||
-                                          (tripDateTime.isAfter(
-                                                  now.add(Duration(days: 1))) &&
-                                              now.hour >= 22 &&
-                                              widget.time == "7:30 AM")) {
+                                      // Get the current date and time
+                                      DateTime currentDate = DateTime.now();
+                                      DateTime tomorrowDate =
+                                          currentDate.add(Duration(days: 1));
+
+                                      if (((widget.date ==
+                                                  DateFormat("yyyy-MM-dd")
+                                                      .format(tomorrowDate)
+                                                      .toString() &&
+                                              widget.time == "7:30 AM" &&
+                                              currentDate.hour >= 22) ||
+                                          (widget.date ==
+                                                  DateFormat("yyyy-MM-dd")
+                                                      .format(currentDate)
+                                                      .toString() &&
+                                              widget.time == "5:30 PM" &&
+                                              currentDate.hour >= 13))) {
                                         AwesomeDialog(
                                           context: context,
                                           dialogType: DialogType.error,

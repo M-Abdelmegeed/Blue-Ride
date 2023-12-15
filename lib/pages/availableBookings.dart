@@ -42,16 +42,20 @@ class _BookingsState extends State<availableBookings> {
   }
 
   void _initializeStream(String from, String to) {
+    String currentDate = DateTime.now().toLocal().toString().split(' ')[0];
+    print(currentDate);
     Stream<QuerySnapshot> query1 = FirebaseFirestore.instance
         .collection('Trips')
         .where('from', isEqualTo: from)
         .where('to', isEqualTo: to)
+        // .where('date', isGreaterThanOrEqualTo: currentDate)
         .snapshots();
 
     Stream<QuerySnapshot> query2 = FirebaseFirestore.instance
         .collection('Trips')
         .where('from', isEqualTo: from)
         .where('stops', arrayContains: to)
+        // .where('date', isGreaterThanOrEqualTo: currentDate)
         .snapshots();
 
     var combinedStream = query1.mergeWith([query2]);
@@ -106,7 +110,7 @@ class _BookingsState extends State<availableBookings> {
 
                   bool isUserPending = pendingRiders.contains(_user?.uid);
                   bool isUserAccepted = acceptedRiders.contains(_user?.uid);
-                  print("User Pending?????" + isUserPending.toString());
+                  // print("User Pending?????" + isUserPending.toString());
                   if (snapshot.data!.docs.length == 0) {
                     return Center(
                       child: Text('Sorry, no trips were found'),
