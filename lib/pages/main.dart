@@ -13,6 +13,7 @@ import './routes.dart';
 import './availableBookings.dart';
 import './confirmBooking.dart';
 import '../sqlite//sqflite.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -284,23 +285,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   ('ID' ,'NAME' , 'EMAIL', 'PHONENUMBER') VALUES ('${user.uid}','${user.displayName}', '${user.email}', '${userFireStore["phoneNumber"]}' ) ''');
       Navigator.pushReplacementNamed(context, '/home');
     } else {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Login Failed'),
-              content: Text('Incorrect email or password. Please try again.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          });
-      print("Some error happened");
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        animType: AnimType.bottomSlide,
+        title: 'Error',
+        desc: 'Invalid credetials, please try again...',
+        btnOkColor: Colors.red,
+        btnOkOnPress: () {},
+      )..show();
     }
   }
 }

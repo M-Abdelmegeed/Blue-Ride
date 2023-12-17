@@ -77,6 +77,12 @@ class _orderHistoryState extends State<orderHistory> {
                   itemBuilder: (context, index) {
                     var historyData = snapshot.data!.docs[index].data()
                         as Map<String, dynamic>;
+                    bool isDatePassed = false;
+                    String currentDate =
+                        DateTime.now().toLocal().toString().split(' ')[0];
+                    if (currentDate.compareTo(historyData["date"]) > 0) {
+                      isDatePassed = true;
+                    }
                     return Card(
                       elevation: 5,
                       margin: EdgeInsets.all(8),
@@ -161,7 +167,8 @@ class _orderHistoryState extends State<orderHistory> {
                               Icon(
                                 historyData["status"] == 'Pending'
                                     ? Icons.pending
-                                    : historyData["status"] == 'Completed'
+                                    : isDatePassed &&
+                                            historyData["status"] == 'Accepted'
                                         ? Icons.check_circle_sharp
                                         : historyData["status"] == 'Rejected'
                                             ? Icons.cancel
@@ -169,14 +176,18 @@ class _orderHistoryState extends State<orderHistory> {
                                 size: 20,
                                 color: historyData["status"] == 'Pending'
                                     ? Colors.yellow
-                                    : historyData["status"] == 'Completed'
+                                    : isDatePassed &&
+                                            historyData["status"] == 'Accepted'
                                         ? Colors.grey
                                         : historyData["status"] == 'Rejected'
                                             ? Colors.red
                                             : Colors.green,
                               ),
                               Text(
-                                historyData["status"],
+                                isDatePassed &&
+                                        historyData["status"] == 'Accepted'
+                                    ? "Completed"
+                                    : historyData["status"],
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,

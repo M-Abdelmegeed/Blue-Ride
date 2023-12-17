@@ -21,6 +21,8 @@ class _HomePageState extends State<HomePage> {
     'Heliopolis',
     'Rehab',
     'ASU',
+    'Gate 3',
+    'Gate 4',
     'Tayaran',
     'Abbas el Akkad',
     'Makram Ebeid',
@@ -36,6 +38,8 @@ class _HomePageState extends State<HomePage> {
     'Mokattam',
   ];
   Map<String, LatLng> placeLocations = {
+    'Gate 3': LatLng(30.06474820910293, 31.278861490545815),
+    'Gate 4': LatLng(30.06474820910293, 31.278861490545815),
     'ASU': LatLng(30.06474820910293, 31.278861490545815),
     'Heliopolis': LatLng(30.113268828632258, 31.343674948595595),
     'Dokki': LatLng(30.040216631304027, 31.205701089600485),
@@ -54,7 +58,7 @@ class _HomePageState extends State<HomePage> {
     'Mokattam': LatLng(30.022446106882835, 31.30427737187155),
   };
   String selectedToValue = 'Ahmed Fakhry';
-  String selectedFromValue = 'ASU';
+  String selectedFromValue = 'Gate 3';
 
   @override
   Widget build(BuildContext context) {

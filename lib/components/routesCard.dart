@@ -27,9 +27,9 @@ class CustomCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: from == 'ASU'
+            color: from == 'Gate 3' || from == 'Gate 4'
                 ? AppColors.primaryColorLight
-                : Color.fromARGB(255, 0, 0, 0),
+                : Color.fromARGB(255, 38, 41, 44),
             borderRadius: BorderRadius.circular(12),
           ),
           width: double.infinity,
@@ -59,12 +59,14 @@ class CustomCard extends StatelessWidget {
                             SizedBox(
                               width: 3,
                             ),
-                            Text(
-                              from,
-                              style: const TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                            Expanded(
+                              child: Text(
+                                from,
+                                style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ],
                         ),

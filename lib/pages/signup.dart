@@ -272,6 +272,7 @@ class _SignupPageState extends State<SignupPage> {
           animType: AnimType.bottomSlide,
           title: 'Error',
           desc: 'Some error happened while creating your account...',
+          btnOkColor: Colors.red,
           btnOkOnPress: () {},
         )..show();
       }

@@ -14,7 +14,7 @@ class _RoutesState extends State<Routes> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   CollectionReference firebaseRoutes =
-      FirebaseFirestore.instance.collection('Routes');
+      FirebaseFirestore.instance.collection('Trips');
 
   int _currentIndex = 1;
 
@@ -42,7 +42,7 @@ class _RoutesState extends State<Routes> {
                     from: routeData["from"],
                     to: routeData["to"],
                     time: routeData["time"],
-                    price: routeData["priceRange"].join('-').toString(),
+                    price: routeData["price"].toString(),
                     stops: routeData["stops"],
                   ),
                 );
