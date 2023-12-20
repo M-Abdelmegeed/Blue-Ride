@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../firebase_options.dart';
-import 'signup.dart';
-import 'homepage.dart';
-import '../style/colors.dart';
-import '../firebase/firebase_auth_services.dart';
-import './profile.dart';
-import './orderHistory.dart';
-import './routes.dart';
-import './availableBookings.dart';
-import './confirmBooking.dart';
-import '../sqlite//sqflite.dart';
+import 'firebase_options.dart';
+import 'pages/signup.dart';
+import 'pages/homepage.dart';
+import 'style/colors.dart';
+import 'firebase/firebase_auth_services.dart';
+import 'pages/profile.dart';
+import 'pages/orderHistory.dart';
+import 'pages/routes.dart';
+import 'pages/availableBookings.dart';
+import 'pages/confirmBooking.dart';
+import 'sqlite/sqflite.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
 Future<void> main() async {

@@ -269,6 +269,24 @@ class _availableBookingsCardState extends State<availableBookingsCard> {
                                           desc:
                                               'It is too late to book the following trip. Afternoon trips have to be booked before 1PM, and morning trips have to be booked by 10PM the prior day.',
                                           btnOkColor: Colors.red,
+                                          btnCancelColor: Colors.blue,
+                                          btnCancelText: 'Bypass',
+                                          btnCancelOnPress: () {
+                                            Navigator.pushNamed(
+                                              context,
+                                              '/confirmBooking',
+                                              arguments: {
+                                                "driverId": widget.driverId,
+                                                "tripId": widget.tripId,
+                                                "driver": widget.driver,
+                                                "from": widget.from,
+                                                "to": widget.to,
+                                                "price": widget.price,
+                                                "time": widget.time,
+                                                "date": widget.date
+                                              },
+                                            );
+                                          },
                                           btnOkOnPress: () {
                                             Navigator.of(context).pop();
                                           },
